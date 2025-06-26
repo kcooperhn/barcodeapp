@@ -4,79 +4,114 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".ui.barcode.BarcodeFragment">
 
+    <!-- Botón de Escaneo (si aún es necesario visible por defecto) -->
     <Button
         android:id="@+id/btn_escanear"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="12dp"
         android:text="@string/lbl_ejecutar_escaneo"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
-
-    <ScrollView
-        android:id="@+id/scrollView3"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_escanear">
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="visible" /> <!-- Ajusta la visibilidad según tu lógica -->
+
+    <!-- Contenedor para la imagen del código de barras -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_barcode_image_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/btn_escanear"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintDimensionRatio="16:9" > <!-- Proporción para la imagen, ajústala -->
+
+        <ImageView
+            android:id="@+id/img_barcode"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/barcode"
+            tools:src="@tools:sample/misc/barcode" /> <!-- Placeholder de un código de barras -->
+    </androidx.cardview.widget.CardView>
+
+    <!-- ScrollView para el contenido textual, en caso de que sea largo -->
+    <ScrollView
+        android:id="@+id/scrollView_info"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@+id/card_barcode_image_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:fillViewport="true"> <!-- Importante para que el LinearLayout interno se expanda si es necesario -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
 
-            <ImageView
-                android:id="@+id/img_barcode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="@string/barcode"
-                android:scaleType="centerInside"
-                tools:src="@tools:sample/avatars" />
-
+            <!-- Tipo de Código de Barras -->
             <TextView
-                android:id="@+id/txt_scan_info"
+                android:id="@+id/lbl_barcode_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:textColor="@color/purple_200"
-                android:textSize="16sp"
-                tools:text="Scan Info" />
-
-            <TextView
-                android:id="@+id/txt_barcode_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:textColor="@color/purple_500"
-                android:textSize="16sp"
-                tools:text="Barcode Info" />
+                android:text="Tipo de Código:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/txt_barcode_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                tools:text="QR_CODE" />
+
+            <!-- Información General del Escaneo (Opcional, si es diferente al contenido) -->
+            <TextView
+                android:id="@+id/lbl_scan_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20sp"
+                android:text="Información Adicional:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                 android:textStyle="bold"
-                tools:text="Barcode Ttype" />
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/txt_scan_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                tools:text="Escaneado correctamente a las 10:30 AM" />
+
+            <!-- Contenido del Código de Barras -->
+            <TextView
+                android:id="@+id/lbl_barcode_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Contenido:"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"/>
+
+            <TextView
+                android:id="@+id/txt_barcode_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:autoLink="web|email|phone"  />
+            <!-- android:autoLink permite que los links, emails, etc. sean clickables -->
 
         </LinearLayout>
     </ScrollView>
