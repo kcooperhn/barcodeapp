@@ -130,6 +130,12 @@ public class MainActivity extends AppCompatActivity {
                 File imagen = new File(directorioImagen);
                 if(imagen.exists()){
                     Bitmap bitmap = BitmapFactory.decodeFile(imagen.getAbsolutePath());
+                    int megapixeles = bitmap.getWidth() * bitmap.getHeight() / 1000000;//OBTENIENDO TAMAÑO EN MEGAPIXELES
+                    int factor = megapixeles/2; //CALCULANDO FACTOR DE REDUCCIÓN EN BASE A MINIMO DE 2MP
+                    Log.d("IMAGEN_CAMARA", "Imagen tomada es de tamaño: "+bitmap.getWidth()+"x"+bitmap.getHeight()+" = "+megapixeles+"MP");
+
+                    //REDIMENSIONANDO IMAGEN A TAMAÑO ACEPTABLE DE 2MP
+                    bitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth()/factor, bitmap.getHeight()/factor, false);
                     imagenSeleccionada = bitmap;
                 }else{
                     Bundle extras = data.getExtras();
@@ -171,5 +177,11 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected void onDestroy() {
+        imagenSeleccionada = null;
+        super.onDestroy();
     }
 }
