@@ -40,15 +40,20 @@ public class BarcodeFragment extends Fragment {
         View root = binding.getRoot();
         try{
             Bitmap fotoCamara = getArguments().getParcelable("camara");
-
+            Bitmap fotoGaleria = getArguments().getParcelable("galeria");
             if(fotoCamara != null){
                 Log.d("BARCODE", "Cargando imagen de camara en pantalla");
                 binding.imgBarcode.setImageBitmap(fotoCamara);
                 showToast(this.getContext().getString(R.string.lbl_imagen_cargada));
                 imagenSeleccionada = fotoCamara;
                 binding.btnEscanear.setVisibility(View.VISIBLE);
+            }else if(fotoGaleria != null){
+                Log.d("BARCODE", "Cargando imagen de camara en pantalla");
+                binding.imgBarcode.setImageBitmap(fotoGaleria);
+                showToast(this.getContext().getString(R.string.lbl_imagen_cargada));
+                imagenSeleccionada = fotoGaleria;
+                binding.btnEscanear.setVisibility(View.VISIBLE);
             }
-            //TODO: COLOCAR LOGICA DE OBTENER FOTO DE GALERIA
 
         }catch (Exception e){
             e.printStackTrace();

@@ -12,11 +12,15 @@ import android.Manifest;
 import android.view.Menu;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.view.MenuItem;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.navigation.NavigationView;
+import com.google.mlkit.vision.common.InputImage;
 
 import androidx.core.content.FileProvider;
 import androidx.navigation.NavController;
@@ -37,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int PICK_IMAGE = 2;
     private static final int REQUEST_PERMISSIONS = 100;
     private ActivityMainBinding binding;
     private String directorioImagen;
@@ -152,10 +157,28 @@ public class MainActivity extends AppCompatActivity {
             Log.d("IMAGEN_CAMARA", "Mostrando imagen en pantalla");
             navegarProcesamiento("camara");
         }
-        //TODO: COLOCAR LOGICA DE OBTENER FOTO DE GALERIA
+        if(requestCode == PICK_IMAGE){
+            if(data == null){
+                Log.d("IMAGEN_CAMARA", "Mostrando imagen en pantalla");
+                showToast("No se seleccionó ninguna imagen, favor selecciona una");
+            }else{
+                Uri uri = data.getData();
+                InputImage imagen;
+                try{
+                    imagen = InputImage.fromFilePath(this, uri);
+                    imagenSeleccionada = imagen.getBitmapInternal();
+                    navegarProcesamiento("galeria");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
 
-
+        }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void showToast(String mensaje) {
+        Toast.makeText(getApplicationContext(), mensaje, Toast.LENGTH_LONG).show();
     }
 
     private void navegarProcesamiento(String tipoFoto) {
@@ -170,6 +193,28 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.action_gallery){
+            seleccionarImagenGaleria();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void seleccionarImagenGaleria() {
+        Intent galeriaIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        galeriaIntent.setType("image/*");
+
+        Intent seleccionIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        seleccionIntent.setType("image/*");
+
+        Intent menuSeleccionIntent = Intent.createChooser(galeriaIntent, "Seleccionar Imagen");
+        menuSeleccionIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{seleccionIntent});
+
+        startActivityForResult(menuSeleccionIntent, PICK_IMAGE);
     }
 
     @Override
